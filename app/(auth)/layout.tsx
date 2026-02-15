@@ -1,4 +1,3 @@
-import "../styles/auth.css";
 import { ReactNode } from "react";
 import Image from "next/image";
 

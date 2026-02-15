@@ -2,7 +2,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const createProduct = async (formData: FormData) => {
   const token = localStorage.getItem("accessToken");
-  console.log("Creating product with token:", token);
 
   const response = await fetch(`${API_URL}/products`, {
     method: "POST",

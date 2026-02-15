@@ -1,10 +1,6 @@
 import { UserRole } from "../types/auth.types"; // apne types ka correct path laga dena
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!API_URL) {
-  throw new Error("API URL is not defined");
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 /* ================================
    Types
