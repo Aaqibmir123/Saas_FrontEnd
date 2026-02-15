@@ -4,7 +4,7 @@ import { Form, Input, Button, Card, Typography, message } from "antd";
 import Link from "next/link";
 import { useState } from "react";
 import { RegisterBusinessPayload } from "../../types/auth.types";
-import { registerUser } from "../../lib/authApi";
+import { registerUser, RegisterPayload } from "../../lib/authApi";
 
 const { Title } = Typography;
 
@@ -15,11 +15,13 @@ export default function RegisterBusinessForm() {
     try {
       setLoading(true);
 
-      const payload = {
+      // 👇 IMPORTANT: Explicitly type payload
+      const payload: RegisterPayload = {
         name: values.name,
         email: values.email,
         password: values.password,
         role: "business_admin",
+        businessName: values.businessName,
       };
 
       const response = await registerUser(payload);
@@ -27,8 +29,9 @@ export default function RegisterBusinessForm() {
       message.success("Store created successfully 🎉");
 
       console.log("Registration Response:", response);
-      // optional redirect
-      // window.location.href = "/login";
+
+      // Optional redirect
+      // window.location.href = "/auth/login";
     } catch (error: any) {
       message.error(error.message || "Registration failed");
     } finally {
@@ -38,8 +41,8 @@ export default function RegisterBusinessForm() {
 
   return (
     <div className="auth-card">
-      <Card>
-        <Title level={3} className="auth-title">
+      <Card style={{ borderRadius: 12 }}>
+        <Title level={3} style={{ textAlign: "center", marginBottom: 24 }}>
           Create Your Store
         </Title>
 
@@ -49,7 +52,7 @@ export default function RegisterBusinessForm() {
             name="name"
             rules={[{ required: true, message: "Please enter your name" }]}
           >
-            <Input />
+            <Input size="large" />
           </Form.Item>
 
           <Form.Item
@@ -57,7 +60,7 @@ export default function RegisterBusinessForm() {
             name="email"
             rules={[{ required: true, message: "Please enter your email" }]}
           >
-            <Input />
+            <Input size="large" />
           </Form.Item>
 
           <Form.Item
@@ -65,7 +68,7 @@ export default function RegisterBusinessForm() {
             name="password"
             rules={[{ required: true, message: "Please enter password" }]}
           >
-            <Input.Password />
+            <Input.Password size="large" />
           </Form.Item>
 
           <Form.Item
@@ -73,15 +76,22 @@ export default function RegisterBusinessForm() {
             name="businessName"
             rules={[{ required: true, message: "Please enter business name" }]}
           >
-            <Input />
+            <Input size="large" />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit" block loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            loading={loading}
+            size="large"
+            style={{ borderRadius: 8 }}
+          >
             Create Store
           </Button>
         </Form>
 
-        <div className="auth-footer">
+        <div style={{ marginTop: 16, textAlign: "center" }}>
           <Link href="/login">Already have account? Login</Link>
         </div>
       </Card>
