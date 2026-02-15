@@ -4,7 +4,7 @@ import { Form, Input, Button, Card, Typography, message } from "antd";
 import Link from "next/link";
 import { useState } from "react";
 import { RegisterCustomerPayload } from "../../types/auth.types";
-import { registerUser } from "../../lib/authApi";
+import { RegisterPayload, registerUser } from "../../lib/authApi";
 
 const { Title } = Typography;
 
@@ -15,7 +15,7 @@ export default function RegisterCustomerForm() {
     try {
       setLoading(true);
 
-      const payload = {
+      const payload: RegisterPayload = {
         name: values.name,
         email: values.email,
         password: values.password,
@@ -30,7 +30,6 @@ export default function RegisterCustomerForm() {
 
       // optional redirect
       // window.location.href = "/login";
-
     } catch (error: any) {
       message.error(error.message || "Registration failed");
     } finally {
@@ -70,12 +69,7 @@ export default function RegisterCustomerForm() {
             <Input.Password />
           </Form.Item>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            loading={loading}
-          >
+          <Button type="primary" htmlType="submit" block loading={loading}>
             Register
           </Button>
         </Form>
