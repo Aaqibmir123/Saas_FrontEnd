@@ -1,20 +1,31 @@
+import { UserRole } from "../types/auth.types"; // apne types ka correct path laga dena
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_URL) {
   throw new Error("API URL is not defined");
 }
 
-type RegisterPayload = {
+/* ================================
+   Types
+================================ */
+
+export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
-  role: "customer" | "business_admin";
-};
+  role: UserRole;
+  businessName?: string;
+}
 
-type LoginPayload = {
+export interface LoginPayload {
   email: string;
   password: string;
-};
+}
+
+/* ================================
+   Response Handler
+================================ */
 
 const handleResponse = async (response: Response) => {
   const data = await response.json();
@@ -26,6 +37,10 @@ const handleResponse = async (response: Response) => {
   return data;
 };
 
+/* ================================
+   Auth APIs
+================================ */
+
 export const registerUser = async (payload: RegisterPayload) => {
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
@@ -33,7 +48,7 @@ export const registerUser = async (payload: RegisterPayload) => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // important for cookies
+      credentials: "include",
       body: JSON.stringify(payload),
     });
 
