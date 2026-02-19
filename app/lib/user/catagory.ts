@@ -1,12 +1,5 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  images: string[];
-  category: string;
-}
+import { Product } from "../../types/product";
 
 export const getProductsByCategory = async (
   category: string,

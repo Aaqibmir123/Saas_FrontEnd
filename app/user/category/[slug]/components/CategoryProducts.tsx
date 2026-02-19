@@ -9,14 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 
 const IMAGE_BASE_URL = "http://localhost:5000/uploads/";
 
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  stock: number;
-}
+import { Product } from "../../../../types/product";
 
 export default function CategoryProducts({ slug }: { slug: string }) {
   const [products, setProducts] = useState<Product[]>([]);
