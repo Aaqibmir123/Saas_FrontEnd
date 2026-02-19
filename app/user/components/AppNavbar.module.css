@@ -1,0 +1,115 @@
+.header {
+  background: #ffffff;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container {
+  width: 92%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  text-decoration: none;
+  position: relative;
+  transition: 0.3s;
+}
+
+.logo::after {
+  content: "";
+  position: absolute;
+  height: 3px;
+  width: 0%;
+  bottom: -6px;
+  left: 0;
+  background: #16a34a;
+  transition: 0.3s ease;
+}
+
+.logo:hover::after {
+  width: 100%;
+}
+
+.navLink {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111;
+  text-decoration: none;
+  position: relative;
+  transition: 0.3s;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 0%;
+  bottom: -4px;
+  left: 0;
+  background: #16a34a;
+  transition: 0.3s;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.registerBtn {
+  background: linear-gradient(90deg, #16a34a, #15803d);
+  color: white !important;
+  border: none !important;
+  height: 40px !important;
+  padding: 0 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
+
+.registerBtn:hover {
+  opacity: 0.9;
+}
+
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.icon:hover {
+  color: #16a34a;
+  transform: scale(1.1);
+}
+
+.avatarWrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #f0f0f0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+}

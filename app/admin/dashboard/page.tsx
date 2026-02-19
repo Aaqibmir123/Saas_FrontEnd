@@ -23,7 +23,6 @@ const COLORS = ["#1890ff", "#52c41a", "#faad14", "#f5222d"];
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  console.log("Dashboard data:", data);
 
   const fetchDashboard = async () => {
     try {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, Menu } from "antd";
+import { Menu } from "antd";
 import {
   DashboardOutlined,
   ShoppingOutlined,
@@ -11,9 +11,11 @@ import {
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 
-const { Sider } = Layout;
+interface Props {
+  onMenuClick?: () => void;
+}
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ onMenuClick }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -57,17 +59,21 @@ export default function AdminSidebar() {
     if (key === "logout") {
       localStorage.removeItem("accessToken");
       router.replace("/login");
-      return;
+    } else {
+      router.push(key);
     }
 
-    router.push(key);
+    if (onMenuClick) {
+      onMenuClick(); // close drawer on mobile
+    }
   };
 
   return (
-    <Sider
-      width={250}
-      theme="dark"
+    <div
       style={{
+        width: 250,
+        height: "100vh",
+        background: "#001529",
         display: "flex",
         flexDirection: "column",
       }}
@@ -79,6 +85,7 @@ export default function AdminSidebar() {
           fontSize: "20px",
           fontWeight: 600,
           textAlign: "center",
+          color: "#fff",
         }}
       >
         SaaSPlatform
@@ -97,7 +104,7 @@ export default function AdminSidebar() {
         }}
       />
 
-      {/* Logout Menu */}
+      {/* Logout */}
       <Menu
         theme="dark"
         mode="inline"
@@ -108,6 +115,6 @@ export default function AdminSidebar() {
           borderTop: "1px solid rgba(255,255,255,0.1)",
         }}
       />
-    </Sider>
+    </div>
   );
 }

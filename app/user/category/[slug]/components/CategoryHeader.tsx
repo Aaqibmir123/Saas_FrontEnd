@@ -14,7 +14,6 @@ export default function CategoryHeader({ slug }: { slug?: string }) {
     <div
       style={{
         textAlign: "center",
-        marginBottom: 40,
       }}
     >
       <Typography.Title

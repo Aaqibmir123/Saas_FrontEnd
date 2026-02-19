@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Row, Col, Card, Spin, Image, Button } from "antd";
+import { Row, Col, Card, Spin, Button } from "antd";
 import { useRouter } from "next/navigation";
 import { getProductsByCategory } from "../../../../lib/user/catagory";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-
-const IMAGE_BASE_URL = "http://localhost:5000/uploads/";
-
 import { Product } from "../../../../types/product";
+import styles from "./CategoryProducts.module.css";
+
+const IMAGE_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") + "/uploads/";
 
 export default function CategoryProducts({ slug }: { slug: string }) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,14 +21,13 @@ export default function CategoryProducts({ slug }: { slug: string }) {
   const { user } = useAuth();
   const router = useRouter();
 
-  /* ================= FETCH PRODUCTS ================= */
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const data = await getProductsByCategory(slug);
         setProducts(data || []);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,6 @@ export default function CategoryProducts({ slug }: { slug: string }) {
     fetchProducts();
   }, [slug]);
 
-  /* ================= ADD TO CART ================= */
   const handleAddToCart = useCallback(
     async (product: Product) => {
       if (!user) {
@@ -51,20 +50,20 @@ export default function CategoryProducts({ slug }: { slug: string }) {
         setAddingId(null);
       }
     },
-    [user, addToCart, router],
+    [user, addToCart, router]
   );
 
   if (loading) {
     return (
-      <Row justify="center" style={{ padding: 80 }}>
+      <Row justify="center" className={styles.loader}>
         <Spin size="large" />
       </Row>
     );
   }
 
   return (
-    <div >
-      <Row gutter={[28, 36]}>
+    <div className={styles.wrapper}>
+      <Row gutter={[24, 28]}>
         {products.map((product) => {
           const imageUrl = product.image
             ? `${IMAGE_BASE_URL}${product.image}`
@@ -73,109 +72,43 @@ export default function CategoryProducts({ slug }: { slug: string }) {
           const inCart = cart.find((item) => item._id === product._id);
 
           return (
-            <Col
-              key={product._id}
-              xs={12} // 📱 Mobile 2 per row
-              sm={12}
-              md={8} // Tablet 3 per row
-              lg={6} // Desktop 4 per row
-            >
+            <Col key={product._id} xs={12} sm={12} md={8} lg={6}>
               <Card
                 hoverable
-                variant="borderless"
-                style={{
-                  borderRadius: 22,
-                  boxShadow: "0 8px 30px rgba(0,0,0,0.05)",
-                  overflow: "hidden",
-                  height: "100%",
-                }}
-                styles={{
-                  body: {
-                    padding: 22,
-                  },
-                }}
+                className={styles.card}
                 cover={
-                  <div
-                    style={{
-                      height: 260, // better balanced height
-                      overflow: "hidden",
-                      background: "#f2f2f2",
-                      display: "block", // 🔥 IMPORTANT
-                      lineHeight: 0, // 🔥 remove inline gap
-                    }}
-                  >
+                  <div className={styles.imageWrapper}>
                     <img
                       src={imageUrl}
                       alt={product.name}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block", // 🔥 VERY IMPORTANT
-                      }}
-
+                      className={styles.image}
                     />
                   </div>
                 }
               >
-                {/* PRODUCT NAME */}
-                <div
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 500,
-                    marginBottom: 8,
-                  }}
-                >
-                  {product.name}
+                <div className={styles.name}>{product.name}</div>
+
+                <div className={styles.description}>
+                  {product.description}
                 </div>
 
-                {/* DESCRIPTION */}
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: "#777",
-                    marginBottom: 18,
-                    minHeight: 40,
-                    lineHeight: "18px",
-                  }}
-                >
-                  {product.description?.length > 60
-                    ? product.description.slice(0, 60) + "..."
-                    : product.description}
-                </div>
-
-                {/* PRICE + BUTTON */}
-                <Row justify="space-between" align="middle">
-                  <div
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 600,
-                      color: "#111",
-                    }}
-                  >
-                    ₹{product.price}
-                  </div>
+                <div className={styles.bottomRow}>
+                  <div className={styles.price}>₹{product.price}</div>
 
                   <Button
-                    type="default"
                     shape="round"
                     disabled={!!inCart || product.stock === 0}
                     loading={addingId === product._id}
-                    style={{
-                      borderColor: "#111",
-                      color: "#111",
-                      padding: "0 26px",
-                      height: 36,
-                    }}
+                    className={styles.cartBtn}
                     onClick={() => handleAddToCart(product)}
                   >
                     {product.stock === 0
                       ? "Sold Out"
                       : inCart
-                        ? "Added"
-                        : "Add"}
+                      ? "Added"
+                      : "Add"}
                   </Button>
-                </Row>
+                </div>
               </Card>
             </Col>
           );

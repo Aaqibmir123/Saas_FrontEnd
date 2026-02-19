@@ -1,11 +1,12 @@
 "use client";
 
-import { Layout, Avatar, Space, Dropdown, Typography } from "antd";
+import { Layout, Avatar, Space, Dropdown, Typography, Button } from "antd";
 import {
   BellOutlined,
   UserOutlined,
   LogoutOutlined,
   LockOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +15,11 @@ import { getUserProfile } from "@/app/lib/user/profileApi";
 const { Header } = Layout;
 const { Text } = Typography;
 
-export default function AdminHeader() {
+interface Props {
+  onMenuClick?: () => void;
+}
+
+export default function AdminHeader({ onMenuClick }: Props) {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
@@ -23,7 +28,7 @@ export default function AdminHeader() {
       try {
         const res = await getUserProfile();
         setUser(res.user);
-      } catch (err) {
+      } catch {
         console.log("Header user fetch failed");
       }
     };
@@ -66,13 +71,25 @@ export default function AdminHeader() {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "0 24px",
+        padding: "0 20px",
         borderBottom: "1px solid #f0f0f0",
       }}
     >
       {/* LEFT SIDE */}
-      <div style={{ fontSize: 16, fontWeight: 600 }}>
-        {user?.businessName || user?.name || "Dashboard"}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        
+        {/* Burger Icon (Mobile Only) */}
+        <div className="mobileMenuBtn">
+          <Button
+            type="text"
+            icon={<MenuOutlined style={{ fontSize: 18 }} />}
+            onClick={onMenuClick}
+          />
+        </div>
+
+        <div style={{ fontSize: 16, fontWeight: 600 }}>
+          {user?.businessName || user?.name || "Dashboard"}
+        </div>
       </div>
 
       {/* RIGHT SIDE */}
@@ -84,15 +101,37 @@ export default function AdminHeader() {
             <Avatar
               src={
                 user?.profileImage
-                  ? `http://localhost:5000/uploads/${user.profileImage}`
+                  ? `${process.env.NEXT_PUBLIC_API_URL?.replace(
+                      "/api",
+                      ""
+                    )}/uploads/${user.profileImage}`
                   : undefined
               }
               icon={<UserOutlined />}
             />
-            <Text strong>{user?.name}</Text>
+            <Text strong className="desktopName">
+              {user?.name}
+            </Text>
           </Space>
         </Dropdown>
       </Space>
+
+      {/* Responsive CSS */}
+      <style jsx>{`
+        .mobileMenuBtn {
+          display: none;
+        }
+
+        @media (max-width: 992px) {
+          .mobileMenuBtn {
+            display: block;
+          }
+
+          .desktopName {
+            display: none;
+          }
+        }
+      `}</style>
     </Header>
   );
 }

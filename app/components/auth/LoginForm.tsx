@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { LoginPayload } from "../../types/auth.types";
 import { loginUser } from "../../lib/authApi";
 import { useAuth } from "../../../context/AuthContext";
+import "../../(auth)/auth.css";
 
 const { Title, Text } = Typography;
 
@@ -20,8 +21,6 @@ export default function LoginForm() {
       setLoading(true);
 
       const data = await loginUser(values);
-      console.log("Login response:", data);
-
       login(data.user, data.accessToken);
 
       message.success("Login successful 🎉");
@@ -39,48 +38,71 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="auth-card">
-      <Card>
-        <Title level={2}>Welcome Back</Title>;
-        <Text type="secondary">Sign in to manage your store</Text>
-        <Form layout="vertical" onFinish={onFinish} style={{ marginTop: 20 }}>
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Enter your email" }]}
-          >
-            <Input size="large" placeholder="Email address" />
-          </Form.Item>
+    <Card className="auth-card">
+      <Title level={2} className="auth-title">
+        Welcome Back
+      </Title>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Enter your password" }]}
-          >
-            <Input.Password size="large" placeholder="Password" />
-          </Form.Item>
+      <Text type="secondary" className="auth-subtitle">
+        Sign in to manage your store
+      </Text>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="large"
-            block
-            loading={loading}
-            style={{ borderRadius: 8 }}
-          >
-            Sign In
-          </Button>
-        </Form>
-        <div
-          style={{
-            marginTop: 16,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        style={{ marginTop: 30 }}
+      >
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Email is required" },
+            { type: "email", message: "Enter valid email" },
+          ]}
         >
-          <Link href="/register/customer">Start as Customer</Link>
+          <Input
+            size="large"
+            placeholder="example@email.com"
+          />
+        </Form.Item>
 
-          <Link href="/register/business">Create Your Store</Link>
-        </div>
-      </Card>
-    </div>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            { required: true, message: "Password is required" },
+            {
+              min: 6,
+              message: "Password must be at least 6 characters",
+            },
+          ]}
+        >
+          <Input.Password
+            size="large"
+            placeholder="Enter your password"
+          />
+        </Form.Item>
+
+        <Button
+          htmlType="submit"
+          size="large"
+          block
+          loading={loading}
+          className="auth-button"
+        >
+          Sign In
+        </Button>
+      </Form>
+
+      <div className="auth-links">
+        <Link href="/register/customer">
+          Start as Customer
+        </Link>
+
+        <Link href="/register/business">
+          Create Your Store
+        </Link>
+      </div>
+    </Card>
   );
 }
