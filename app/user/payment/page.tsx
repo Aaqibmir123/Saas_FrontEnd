@@ -33,11 +33,10 @@ export default function PaymentPage() {
 
       setLoading(true);
 
-    await createOrder({
-  paymentMethod: method,
-  address: shippingAddress,
-});
-
+      await createOrder({
+        paymentMethod: method,
+        address: shippingAddress,
+      });
 
       message.success("Order placed successfully");
       router.push("/user/order-success");
@@ -74,15 +73,12 @@ export default function PaymentPage() {
               style={{ width: "100%" }}
             >
               <Space direction="vertical" style={{ width: "100%" }} size={16}>
-                
                 {/* COD OPTION */}
                 <Card
                   style={{
                     borderRadius: 12,
                     border:
-                      method === "COD"
-                        ? "2px solid #1677ff"
-                        : "1px solid #eee",
+                      method === "COD" ? "2px solid #1677ff" : "1px solid #eee",
                     cursor: "pointer",
                   }}
                   onClick={() => setMethod("COD")}
@@ -105,12 +101,16 @@ export default function PaymentPage() {
                     opacity: 0.7,
                   }}
                 >
-                  <Space justify="space-between" style={{ width: "100%" }}>
+                  <Space
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Space direction="vertical" size={0}>
                       <Text strong>PhonePe</Text>
-                      <Text type="secondary">
-                        UPI / Wallet / Card
-                      </Text>
+                      <Text type="secondary">UPI / Wallet / Card</Text>
                     </Space>
                     <Tag color="purple">Coming Soon</Tag>
                   </Space>
@@ -124,12 +124,16 @@ export default function PaymentPage() {
                     opacity: 0.7,
                   }}
                 >
-                  <Space justify="space-between" style={{ width: "100%" }}>
+                  <Space
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Space direction="vertical" size={0}>
                       <Text strong>Paytm</Text>
-                      <Text type="secondary">
-                        UPI / Wallet / Card
-                      </Text>
+                      <Text type="secondary">UPI / Wallet / Card</Text>
                     </Space>
                     <Tag color="blue">Coming Soon</Tag>
                   </Space>
@@ -143,12 +147,10 @@ export default function PaymentPage() {
                     opacity: 0.7,
                   }}
                 >
-                  <Space  style={{ width: "100%" }}>
+                  <Space style={{ width: "100%" }}>
                     <Space direction="vertical" size={0}>
                       <Text strong>Credit / Debit Card</Text>
-                      <Text type="secondary">
-                        Visa / Mastercard / RuPay
-                      </Text>
+                      <Text type="secondary">Visa / Mastercard / RuPay</Text>
                     </Space>
                     <Tag color="orange">Coming Soon</Tag>
                   </Space>
