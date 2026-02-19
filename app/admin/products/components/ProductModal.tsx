@@ -118,6 +118,7 @@ export default function ProductModal({
             <Form.Item
               name="stock"
               label="Stock"
+              extra="If stock becomes 0, product will be inactive"
               rules={[{ required: true, message: "Stock is required" }]}
             >
               <InputNumber style={{ width: "100%" }} min={0} />
@@ -175,18 +176,14 @@ export default function ProductModal({
               name="image"
               label="Image"
               valuePropName="fileList"
-              getValueFromEvent={(e) =>
-                Array.isArray(e) ? e : e?.fileList
-              }
+              getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
             >
               <Upload
                 beforeUpload={() => false}
                 maxCount={1}
                 listType="picture"
               >
-                <Button icon={<PlusOutlined />}>
-                  Upload
-                </Button>
+                <Button icon={<PlusOutlined />}>Upload</Button>
               </Upload>
             </Form.Item>
           </Col>

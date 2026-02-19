@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import AppNavbar from "./components/AppNavbar";
 import AppFooter from "./components/AppFooter";
+import CartDrawer from "./components/CartDrawer";
 
 export default function UserLayout({
   children,
@@ -14,6 +15,7 @@ export default function UserLayout({
 
       <main style={{ flex: 1, padding: "20px 24px" }}>
         {children}
+        <CartDrawer />
       </main>
 
       <AppFooter />

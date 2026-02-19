@@ -28,7 +28,6 @@ export default function RegisterBusinessForm() {
 
       message.success("Store created successfully 🎉");
 
-      console.log("Registration Response:", response);
 
       // Optional redirect
       // window.location.href = "/auth/login";

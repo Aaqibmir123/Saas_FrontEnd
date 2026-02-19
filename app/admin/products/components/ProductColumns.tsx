@@ -1,10 +1,6 @@
 import { Tag, Image, Avatar, Button, Space, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 
 import { Product } from "../types";
 
@@ -14,7 +10,7 @@ export const getProductColumns = (
   currentPage: number,
   pageSize: number,
   onEdit: (record: Product) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
 ): ColumnsType<Product> => [
   /* INDEX */
   {
@@ -79,8 +75,17 @@ export const getProductColumns = (
     title: "Stock",
     dataIndex: "stock",
     key: "stock",
-    width: 100,
+    width: 120,
     align: "center",
+    render: (stock: number) => {
+      if (stock === 0) {
+        return <Tag color="red">Out of Stock</Tag>;
+      }
+      if (stock < 5) {
+        return <Tag color="orange">Low ({stock})</Tag>;
+      }
+      return <Tag color="green">{stock}</Tag>;
+    },
   },
 
   /* CATEGORY (Hidden on mobile) */
