@@ -33,10 +33,11 @@ export default function PaymentPage() {
 
       setLoading(true);
 
-      await createOrder({
-        paymentMethod: method,
-        shippingAddress,
-      });
+    await createOrder({
+  paymentMethod: method,
+  address: shippingAddress,
+});
+
 
       message.success("Order placed successfully");
       router.push("/user/order-success");
@@ -142,7 +143,7 @@ export default function PaymentPage() {
                     opacity: 0.7,
                   }}
                 >
-                  <Space justify="space-between" style={{ width: "100%" }}>
+                  <Space  style={{ width: "100%" }}>
                     <Space direction="vertical" size={0}>
                       <Text strong>Credit / Debit Card</Text>
                       <Text type="secondary">
