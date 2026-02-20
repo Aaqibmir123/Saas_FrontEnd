@@ -1,15 +1,9 @@
 "use client";
 
 import { Layout, Avatar, Space, Dropdown, Typography } from "antd";
-import {
-  BellOutlined,
-  UserOutlined,
-  LockOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
+import { BellOutlined, UserOutlined, MenuOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getUserProfile } from "@/app/lib/user/profileApi";
+import { useAuth } from "@/context/AuthContext";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -20,25 +14,12 @@ export default function AdminHeader({
   onMenuClick?: () => void;
 }) {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await getUserProfile();
-        setUser(res.user);
-      } catch {
-        console.log("Header user fetch failed");
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    router.push("/login");
-  };
+  const { user, logout } = useAuth();
+  const displayName = user?.name
+    ? user.name.length > 6
+      ? user.name.slice(0, 6) + "..."
+      : user.name
+    : "";
 
   const items = [
     {
@@ -48,12 +29,13 @@ export default function AdminHeader({
       onClick: () => router.push("/admin/profile"),
     },
     {
-      key: "password",
-      icon: <LockOutlined />,
-      label: "Change Password",
-      onClick: () => router.push("/admin/change-password"),
+      key: "logout",
+      label: "Logout",
+      onClick: () => {
+        logout();
+        router.push("/login");
+      },
     },
-    { type: "divider" as const },
   ];
 
   return (
@@ -69,7 +51,6 @@ export default function AdminHeader({
     >
       {/* LEFT SIDE */}
       <Space align="center">
-        {/* ONLY MOBILE BURGER */}
         <div className="mobileBurger">
           <MenuOutlined
             style={{ fontSize: 20, cursor: "pointer" }}
@@ -91,12 +72,12 @@ export default function AdminHeader({
             <Avatar
               src={
                 user?.profileImage
-                  ? `http://localhost:5000/uploads/${user.profileImage}`
+                  ? `http://localhost:5000/uploads/${user.profileImage}?v=${user.profileImage}`
                   : undefined
               }
               icon={<UserOutlined />}
             />
-            <Text strong>{user?.name}</Text>
+            <Text strong>{displayName}</Text>{" "}
           </Space>
         </Dropdown>
       </Space>

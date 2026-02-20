@@ -9,14 +9,22 @@ import {
   Tag,
   Image,
   Button,
+  message,
 } from "antd";
 import { getUserOrders } from "@/app/lib/user/orderApi";
+import { useCart } from "@/context/CartContext";
 
-const IMAGE_BASE_URL = "http://localhost:5000/uploads/";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "";
+
+const IMAGE_BASE_URL = `${API_BASE}/uploads/`;
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reorderingId, setReorderingId] = useState<string | null>(null);
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -33,6 +41,29 @@ export default function OrdersPage() {
     fetchOrders();
   }, []);
 
+  /* ================= REORDER ================= */
+  const handleReorder = async (order: any) => {
+    try {
+      setReorderingId(order._id);
+
+      for (const item of order.items) {
+        await addToCart({
+          _id: item.product,        // product id
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          quantity: item.quantity,
+        });
+      }
+
+    } catch (error) {
+      console.error(error);
+      message.error("Reorder failed");
+    } finally {
+      setReorderingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: 60 }}>
@@ -45,16 +76,10 @@ export default function OrdersPage() {
     <div style={{ padding: "30px 20px" }}>
       <Row gutter={[24, 24]}>
         {orders.map((order) => {
-          const item = order.items[0]; // first item preview
+          const item = order.items[0];
 
           return (
-            <Col
-              key={order._id}
-              xs={24}
-              sm={12}
-              md={8}   // 3 per row desktop
-              lg={8}
-            >
+            <Col key={order._id} xs={24} sm={12} md={8} lg={8}>
               <Card
                 hoverable
                 style={{
@@ -63,39 +88,34 @@ export default function OrdersPage() {
                 }}
                 cover={
                   <Image
-                    src={`${IMAGE_BASE_URL}${item.image}`}
-                    alt={item.name}
+                    src={
+                      item?.image
+                        ? `${IMAGE_BASE_URL}${item.image}`
+                        : "/placeholder.jpg"
+                    }
+                    alt={item?.name}
                     preview={false}
                     height={220}
-                    style={{
-                      objectFit: "cover",
-                    }}
-                    fallback="/placeholder.jpg"
+                    style={{ objectFit: "cover" }}
                   />
                 }
               >
-                {/* Name */}
                 <div style={{ fontWeight: 600, fontSize: 16 }}>
-                  Name: {item.name}
+                  {item?.name}
                 </div>
 
-                {/* Price */}
                 <div style={{ marginTop: 6 }}>
-                  Price: ₹ {order.totalAmount}
+                  Total: ₹ {order.totalAmount}
                 </div>
 
-                {/* Date */}
                 <div style={{ marginTop: 6, fontSize: 13, color: "#666" }}>
-                  Date:{" "}
                   {new Date(order.createdAt).toLocaleString()}
                 </div>
 
-                {/* Status */}
                 <div style={{ marginTop: 8 }}>
                   <Tag color="blue">{order.status}</Tag>
                 </div>
 
-                {/* Bottom Row */}
                 <Row
                   justify="space-between"
                   align="middle"
@@ -109,6 +129,8 @@ export default function OrdersPage() {
                     <Button
                       type="primary"
                       size="small"
+                      loading={reorderingId === order._id}
+                      onClick={() => handleReorder(order)}
                     >
                       Reorder
                     </Button>

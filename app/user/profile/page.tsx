@@ -15,8 +15,8 @@ import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getUserProfile, updateUserProfile } from "@/app/lib/user/profileApi";
 
-const IMAGE_BASE_URL = "http://localhost:5000/uploads/";
-
+const IMAGE_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") + "/uploads/";
 export default function ProfilePage() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -41,25 +41,35 @@ export default function ProfilePage() {
   }, []);
 
   const handleFinish = async (values: any) => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData = new FormData();
-      formData.append("name", values.name);
+    const formData = new FormData();
+    formData.append("name", values.name);
 
-      if (values.profileImage?.file) {
-        formData.append("profileImage", values.profileImage.file);
-      }
-
-      await updateUserProfile(formData);
-
-      message.success("Profile updated");
-    } catch (err) {
-      message.error("Update failed");
-    } finally {
-      setLoading(false);
+    // FIXED IMAGE HANDLING
+    if (values.profileImage && values.profileImage.length > 0) {
+      formData.append(
+        "profileImage",
+        values.profileImage[0].originFileObj
+      );
     }
-  };
+
+    const updatedUser = await updateUserProfile(formData);
+
+    // Immediately update preview after successful upload
+    if (updatedUser.profileImage) {
+      setImagePreview(`${IMAGE_BASE_URL}${updatedUser.profileImage}`);
+    }
+
+    message.success("Profile updated successfully");
+  } catch (err) {
+    console.error(err);
+    message.error("Update failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <Row justify="center" style={{ marginTop: 40 }}>

@@ -14,21 +14,24 @@ import {
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getUserProfile, updateUserProfile } from "@/app/lib/user/profileApi";
+import { useAuth } from "@/context/AuthContext";
 
-const IMAGE_BASE_URL = "http://localhost:5000/uploads/";
+const IMAGE_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") + "/uploads/";
 
+  
 export default function ProfilePage() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>();
   const [role, setRole] = useState<string>();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const res = await getUserProfile();
-        console.log("API response:", res);
         const user = res;
         console.log("Fetched user profile:", user);
 
@@ -71,6 +74,7 @@ export default function ProfilePage() {
       }
 
       await updateUserProfile(formData);
+      await refreshUser();
 
       message.success("Profile updated successfully");
     } catch (err) {
@@ -91,7 +95,6 @@ export default function ProfilePage() {
             }}
           >
             <Form form={form} layout="vertical" onFinish={handleFinish}>
-              
               {/* Avatar Section */}
               <div style={{ textAlign: "center", marginBottom: 30 }}>
                 <Avatar

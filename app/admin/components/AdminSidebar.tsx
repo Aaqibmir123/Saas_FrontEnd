@@ -5,8 +5,7 @@ import {
   DashboardOutlined,
   ShoppingOutlined,
   ShoppingCartOutlined,
-  BarChartOutlined,
-  UserOutlined,
+
   LogoutOutlined,
   CloseOutlined,
 } from "@ant-design/icons";

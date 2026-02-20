@@ -62,3 +62,25 @@ export const getUserOrders = async () => {
   }
 };
 
+export const getOrderById = async (orderId: string) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_URL}/user/orders/${orderId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch order details");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch order details error:", error);
+    throw error;
+  }
+};
