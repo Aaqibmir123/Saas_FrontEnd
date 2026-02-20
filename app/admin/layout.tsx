@@ -1,33 +1,66 @@
 "use client";
 
-import { Layout, Drawer } from "antd";
+import { Layout, Drawer, Grid } from "antd";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import AdminSidebar from "./components/AdminSidebar";
 import AdminHeader from "./components/AdminHeader";
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
+const { useBreakpoint } = Grid;
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const screens = useBreakpoint();
+  const isMobile = !screens.lg; // lg breakpoint below = mobile
   const [open, setOpen] = useState(false);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* ===== Desktop Sidebar ===== */}
-      <Sider
-        width={250}
-        breakpoint="lg"
-        collapsedWidth="0"
-        trigger={null} // 👈 ADD THIS
-        style={{ background: "#001529" }}
-        className="desktopOnly"
-      >
-        <AdminSidebar />
-      </Sider>
+      {/* ================= Desktop Sidebar ================= */}
+      {!isMobile && (
+        <Layout.Sider
+          width={250}
+          theme="dark"
+          style={{
+            height: "100vh",
+            position: "sticky",
+            left: 0,
+            top: 0,
+          }}
+        >
+          <AdminSidebar />
+        </Layout.Sider>
+      )}
 
-      {/* ===== Main Section ===== */}
+      {/* ================= Mobile Drawer ================= */}
+      {isMobile && (
+        <Drawer
+          placement="left"
+          open={open}
+          onClose={() => setOpen(false)}
+          size="large"
+          closable={false}
+          styles={{ body: { padding: 0 } }}
+        >
+          <AdminSidebar
+            isMobile
+            onMenuClick={() => setOpen(false)}
+            onClose={() => setOpen(false)}
+          />
+        </Drawer>
+      )}
+
+      {/* ================= Main Area ================= */}
       <Layout>
-        <AdminHeader onMenuClick={() => setOpen(true)} />
+        <AdminHeader
+          onMenuClick={() => {
+            if (isMobile) setOpen(true);
+          }}
+        />
 
         <Content
           style={{
@@ -39,35 +72,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           {children}
         </Content>
       </Layout>
-
-      {/* ===== Mobile Drawer ===== */}
-      <Drawer
-        placement="left"
-        open={open}
-        onClose={() => setOpen(false)}
-        styles={{ body: { padding: 0 } }}
-        style={{ padding: 0 }}
-        size="default"
-        rootStyle={{ maxWidth: "100vw" }}
-      >
-        <div style={{ width: "100vw" }}>
-          <AdminSidebar onMenuClick={() => setOpen(false)} />
-        </div>
-      </Drawer>
-
-      <style jsx>{`
-        @media (max-width: 992px) {
-          .desktopOnly {
-            display: none;
-          }
-        }
-
-        @media (min-width: 993px) {
-          .ant-drawer {
-            display: none !important;
-          }
-        }
-      `}</style>
     </Layout>
   );
 }

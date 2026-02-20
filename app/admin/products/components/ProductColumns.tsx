@@ -1,6 +1,10 @@
 import { Tag, Image, Avatar, Button, Space, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { EditOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 
 import { Product } from "../types";
 
@@ -16,7 +20,7 @@ export const getProductColumns = (
   {
     title: "#",
     key: "index",
-    width: 60,
+    width: 10,
     align: "center",
     render: (_value, _record, index) =>
       (currentPage - 1) * pageSize + index + 1,
@@ -27,7 +31,7 @@ export const getProductColumns = (
     title: "Image",
     dataIndex: "image",
     key: "image",
-    width: 80,
+    width: 10,
     align: "center",
     render: (image?: string) =>
       image ? (
@@ -52,6 +56,7 @@ export const getProductColumns = (
     title: "Name",
     dataIndex: "name",
     key: "name",
+    width: 15, // slightly reduced
     ellipsis: true,
     render: (name: string) => (
       <Tooltip title={name}>
@@ -65,7 +70,7 @@ export const getProductColumns = (
     title: "Price",
     dataIndex: "price",
     key: "price",
-    width: 110,
+    width: 10, // tighter
     align: "right",
     render: (price: number) => `$${price}`,
   },
@@ -75,7 +80,7 @@ export const getProductColumns = (
     title: "Stock",
     dataIndex: "stock",
     key: "stock",
-    width: 120,
+    width: 10, // tighter
     align: "center",
     render: (stock: number) => {
       if (stock === 0) {
@@ -88,12 +93,13 @@ export const getProductColumns = (
     },
   },
 
-  /* CATEGORY (Hidden on mobile) */
+  /* CATEGORY */
   {
     title: "Category",
     dataIndex: "category",
     key: "category",
-    responsive: ["md"], // hide on small screens
+    width: 10, // tighter
+    responsive: ["md"],
     ellipsis: true,
   },
 
@@ -102,7 +108,7 @@ export const getProductColumns = (
     title: "Status",
     dataIndex: "status",
     key: "status",
-    width: 120,
+    width: 10,
     align: "center",
     render: (status: "active" | "inactive") =>
       status === "active" ? (
@@ -116,10 +122,10 @@ export const getProductColumns = (
   {
     title: "Actions",
     key: "actions",
-    width: 120,
+    width: 20, // reduced
     align: "center",
     render: (_value, record) => (
-      <Space size="small">
+      <Space size={4}>
         <Button
           size="small"
           icon={<EditOutlined />}

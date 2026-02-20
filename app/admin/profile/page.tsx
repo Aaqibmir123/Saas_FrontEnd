@@ -28,7 +28,9 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       try {
         const res = await getUserProfile();
-        const user = res.user;
+        console.log("API response:", res);
+        const user = res;
+        console.log("Fetched user profile:", user);
 
         setRole(user.role);
 

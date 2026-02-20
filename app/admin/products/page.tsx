@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Table,
-  Button,
-  Typography,
-  Row,
-  Col,
-  message,
-  Popconfirm,
-} from "antd";
+import { Table, Button, Typography, Row, Col, message, Popconfirm } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
@@ -38,18 +30,11 @@ interface ProductFormValues {
 }
 
 export default function ProductsPage() {
-  const {
-    products,
-    loading,
-    total,
-    currentPage,
-    fetchProducts,
-    pageSize,
-  } = useProducts();
+  const { products, loading, total, currentPage, fetchProducts, pageSize } =
+    useProducts();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] =
-    useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   /* ================= EDIT ================= */
 
@@ -78,10 +63,7 @@ export default function ProductsPage() {
 
       Object.entries(values).forEach(([key, value]) => {
         if (key === "image" && value?.length) {
-          formData.append(
-            "image",
-            value[0].originFileObj as Blob
-          );
+          formData.append("image", value[0].originFileObj as Blob);
         } else {
           formData.append(key, String(value ?? ""));
         }
@@ -106,11 +88,7 @@ export default function ProductsPage() {
   return (
     <div style={{ width: "100%" }}>
       {/* HEADER */}
-      <Row
-        justify="space-between"
-        align="middle"
-        style={{ marginBottom: 24 }}
-      >
+      <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
         <Col>
           <Title level={3} style={{ margin: 0 }}>
             Products
@@ -137,12 +115,13 @@ export default function ProductsPage() {
           currentPage,
           pageSize,
           handleEdit,
-          handleDelete
+          handleDelete,
         )}
         dataSource={products}
         rowKey="_id"
         loading={loading}
-        scroll={{ x: 1000 }} // better than max-content
+        tableLayout="fixed"
+        scroll={{ x: "max-content" }}
         pagination={{
           total,
           pageSize,

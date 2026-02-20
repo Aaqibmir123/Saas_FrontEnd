@@ -1,10 +1,9 @@
 "use client";
 
-import { Layout, Avatar, Space, Dropdown, Typography, Button } from "antd";
+import { Layout, Avatar, Space, Dropdown, Typography } from "antd";
 import {
   BellOutlined,
   UserOutlined,
-  LogoutOutlined,
   LockOutlined,
   MenuOutlined,
 } from "@ant-design/icons";
@@ -15,11 +14,11 @@ import { getUserProfile } from "@/app/lib/user/profileApi";
 const { Header } = Layout;
 const { Text } = Typography;
 
-interface Props {
+export default function AdminHeader({
+  onMenuClick,
+}: {
   onMenuClick?: () => void;
-}
-
-export default function AdminHeader({ onMenuClick }: Props) {
+}) {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
@@ -55,13 +54,6 @@ export default function AdminHeader({ onMenuClick }: Props) {
       onClick: () => router.push("/admin/change-password"),
     },
     { type: "divider" as const },
-    {
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: "Logout",
-      danger: true,
-      onClick: handleLogout,
-    },
   ];
 
   return (
@@ -71,18 +63,16 @@ export default function AdminHeader({ onMenuClick }: Props) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "0 20px",
+        padding: "0 16px",
         borderBottom: "1px solid #f0f0f0",
       }}
     >
       {/* LEFT SIDE */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        
-        {/* Burger Icon (Mobile Only) */}
-        <div className="mobileMenuBtn">
-          <Button
-            type="text"
-            icon={<MenuOutlined style={{ fontSize: 18 }} />}
+      <Space align="center">
+        {/* ONLY MOBILE BURGER */}
+        <div className="mobileBurger">
+          <MenuOutlined
+            style={{ fontSize: 20, cursor: "pointer" }}
             onClick={onMenuClick}
           />
         </div>
@@ -90,7 +80,7 @@ export default function AdminHeader({ onMenuClick }: Props) {
         <div style={{ fontSize: 16, fontWeight: 600 }}>
           {user?.businessName || user?.name || "Dashboard"}
         </div>
-      </div>
+      </Space>
 
       {/* RIGHT SIDE */}
       <Space size="large">
@@ -101,33 +91,19 @@ export default function AdminHeader({ onMenuClick }: Props) {
             <Avatar
               src={
                 user?.profileImage
-                  ? `${process.env.NEXT_PUBLIC_API_URL?.replace(
-                      "/api",
-                      ""
-                    )}/uploads/${user.profileImage}`
+                  ? `http://localhost:5000/uploads/${user.profileImage}`
                   : undefined
               }
               icon={<UserOutlined />}
             />
-            <Text strong className="desktopName">
-              {user?.name}
-            </Text>
+            <Text strong>{user?.name}</Text>
           </Space>
         </Dropdown>
       </Space>
 
-      {/* Responsive CSS */}
       <style jsx>{`
-        .mobileMenuBtn {
-          display: none;
-        }
-
-        @media (max-width: 992px) {
-          .mobileMenuBtn {
-            display: block;
-          }
-
-          .desktopName {
+        @media (min-width: 992px) {
+          .mobileBurger {
             display: none;
           }
         }
